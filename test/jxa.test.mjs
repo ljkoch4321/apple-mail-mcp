@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildFakeMail, loadScript } from "./fake-mail.mjs";
+import { buildFakeMail, loadScript, element, collection } from "./fake-mail.mjs";
 
 const setup = () => {
   const fake = buildFakeMail();
@@ -95,6 +95,17 @@ test("update and move messages", () => {
   const mv = call("move_messages", { messages: [{ id: 2, account: "Work", mailbox: "INBOX" }], to_account: "Work", to_mailbox: "archive" }).result;
   assert.equal(mv.results[0].ok, true);
   assert.ok(archiveMsgs.some((m) => m.__raw.id === 2));
+});
+
+test("duplicate account names prefer the enabled account", () => {
+  const { Mail, call } = setup();
+  const work = Mail.accounts[0];
+  const dupe = element({ name: "Work", enabled: false, emailAddresses: [], mailboxes: collection([]) });
+  Mail.accounts.push(dupe);
+  assert.equal(call("list_messages", { account: "Work" }).ok, true);
+  dupe.__raw.enabled = true;
+  assert.match(call("list_messages", { account: "Work" }).error, /ambiguous/);
+  assert.ok(work);
 });
 
 test("bad request JSON and unknown op", () => {

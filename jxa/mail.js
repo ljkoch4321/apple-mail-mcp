@@ -39,18 +39,18 @@ function iso(d) {
 function findAccount(Mail, name) {
   var accts = Mail.accounts();
   var lower = String(name).toLowerCase();
-  for (var i = 0; i < accts.length; i++) {
-    var a = accts[i];
-    if (a.name().toLowerCase() === lower) return a;
-  }
+  var byName = accts.filter(function (a) { return a.name().toLowerCase() === lower; });
   // Allow matching by email address as a convenience.
-  for (var j = 0; j < accts.length; j++) {
-    var addrs = safe(function () { return accts[j].emailAddresses(); }, []);
-    for (var k = 0; k < addrs.length; k++) {
-      if (String(addrs[k]).toLowerCase() === lower) return accts[j];
-    }
-  }
-  throw new Error("Account not found: " + name + ". Use list_accounts to see names.");
+  var matches = byName.length ? byName : accts.filter(function (a) {
+    var addrs = safe(function () { return a.emailAddresses(); }, []);
+    return addrs.some(function (x) { return String(x).toLowerCase() === lower; });
+  });
+  if (!matches.length) throw new Error("Account not found: " + name + ". Use list_accounts to see names.");
+  if (matches.length === 1) return matches[0];
+  // Several accounts share the name: prefer the enabled one(s).
+  var enabled = matches.filter(function (a) { return safe(function () { return a.enabled(); }, true) !== false; });
+  if (enabled.length === 1) return enabled[0];
+  throw new Error("Account name '" + name + "' is ambiguous (" + matches.length + " accounts" + (enabled.length ? ", " + enabled.length + " enabled" : "") + "). Rename one in Mail → Settings → Accounts → Description.");
 }
 
 var SPECIAL = {
