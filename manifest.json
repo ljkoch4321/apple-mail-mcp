@@ -1,0 +1,29 @@
+{
+  "manifest_version": "0.3",
+  "name": "apple-mail",
+  "display_name": "Apple Mail",
+  "version": "1.0.0",
+  "description": "Read, search, draft, send and organize email in Apple Mail on your Mac.",
+  "long_description": "Connects Claude to the Mail app on macOS via JavaScript for Automation. Works with every account configured in Mail (iCloud, Gmail, Exchange, IMAP). Drafts open in a Mail window for review by default; send_email sends immediately.",
+  "author": { "name": "LJ Koch Group" },
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": { "command": "node", "args": ["${__dirname}/dist/index.js"] }
+  },
+  "tools": [
+    { "name": "list_accounts", "description": "List Mail accounts" },
+    { "name": "list_mailboxes", "description": "List mailboxes with unread counts" },
+    { "name": "list_messages", "description": "List messages, newest first" },
+    { "name": "search_messages", "description": "Search by subject, sender or body" },
+    { "name": "get_message", "description": "Read a message" },
+    { "name": "create_draft", "description": "Open a draft for review" },
+    { "name": "send_email", "description": "Send an email" },
+    { "name": "reply", "description": "Reply to a message" },
+    { "name": "forward", "description": "Forward a message" },
+    { "name": "update_messages", "description": "Mark read/unread, flag/unflag" },
+    { "name": "move_messages", "description": "Move messages between mailboxes" }
+  ],
+  "compatibility": { "platforms": ["darwin"], "runtimes": { "node": ">=18.0.0" } },
+  "license": "MIT"
+}
