@@ -8,17 +8,31 @@ It runs locally, so use it from the **Claude Desktop app** or **Claude Code on y
 
 ## Install
 
-### Option A: Claude Desktop (one click)
+Needs macOS and Node 18+ (`node -v`; install with `brew install node` if missing).
+
+### Option A: Claude Code plugin (recommended)
+In Claude Code on your Mac:
+```
+/plugin install apple-mail --marketplace ljkoch4321/apple-mail-mcp
+```
+On Claude Code older than 2.1.275, run it in two steps:
+```
+/plugin marketplace add ljkoch4321/apple-mail-mcp
+/plugin install apple-mail@ljkoch-plugins
+```
+Update later with `/plugin marketplace update ljkoch-plugins`. The plugin ships a prebuilt
+`dist/index.js`, so no `npm install` is needed.
+
+### Option B: Claude Desktop (one click)
 1. Copy `apple-mail.mcpb` to your Mac.
 2. Double-click it, or drag it onto Claude Desktop → Settings → Extensions, and click **Install**.
 
-### Option B: Claude Code / manual config
-On your Mac (Node 18+):
+### Option C: manual config
 ```bash
-cd apple-mail-mcp && npm install && npm run build
+git clone https://github.com/ljkoch4321/apple-mail-mcp.git && cd apple-mail-mcp
 ```
 ```bash
-claude mcp add apple-mail -- node "$PWD/dist/index.js"
+claude mcp add apple-mail -s user -- node "$PWD/dist/index.js"
 ```
 Or add this to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 ```json
@@ -59,4 +73,8 @@ npm test
 ```
 The tests run `jxa/mail.js` against a fake Mail object in Node, and exercise the MCP server
 through an in-memory client. They pass on Linux, but real Mail behavior needs a Mac.
-Rebuild the extension with `npm prune --omit=dev && npx @anthropic-ai/mcpb pack . apple-mail.mcpb && npm install`.
+
+`npm run build` type-checks into `build/` and bundles the server into a self-contained `dist/index.js`.
+**Commit `dist/index.js` after changing `src/`**, since plugin installs use it as-is. Bump `version` in
+`.claude-plugin/plugin.json` and `marketplace.json` so `/plugin` picks up updates.
+Rebuild the Desktop extension with `npx @anthropic-ai/mcpb pack . apple-mail.mcpb` (no deps needed).

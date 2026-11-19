@@ -1,5 +1,8 @@
 src/
 test/
+build/
+node_modules/
 tsconfig.json
 *.mcpb
 README.md
+.claude-plugin/

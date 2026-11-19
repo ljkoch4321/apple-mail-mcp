@@ -1,0 +1,12 @@
+{
+  "name": "ljkoch-plugins",
+  "owner": { "name": "LJ Koch Group" },
+  "plugins": [
+    {
+      "name": "apple-mail",
+      "source": "./",
+      "description": "Read, search, draft, send and organize email in Apple Mail on your Mac (macOS only).",
+      "version": "1.1.0"
+    }
+  ]
+}
